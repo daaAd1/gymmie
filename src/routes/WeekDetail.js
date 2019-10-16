@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
+import { useToasts } from "react-toast-notifications";
 import WorkoutItem from "../components/WorkoutItem";
 import styled from "styled-components";
 import WorkoutPlanItem from "../components/WorkoutPlanItem";
@@ -7,11 +9,11 @@ import WeekInfo from "../components/WeekInfo";
 import { isCurrentWeek } from "../utils";
 import AddWorkoutTitle from "../components/AddWorkoutTitle";
 import { NoResultsFound } from "./Weeks";
-import { FlexColumn } from "../components/defaults/Flex";
+import { FlexColumn, FlexRow } from "../components/defaults/Flex";
 import moment from "moment";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { withFirebase } from "../components/Firebase";
-import { doRemoveWorkout } from "../firebase-db";
+import { doRemoveWorkout, doSaveCurrentWeeksNote } from "../firebase-db";
 import withAuthUser from "../components/Firebase/Session/withAuthUser";
 import { withAuthorization } from "../components/Firebase/Session";
 import { Loader } from "../components/defaults/Loader";
@@ -19,19 +21,54 @@ import { Loader } from "../components/defaults/Loader";
 const Wrapper = styled.div``;
 
 const WorkoutPlanTitle = styled.h3`
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
   font-size: 20px;
   font-weight: 500;
   margin: 24px 0 16px;
+`;
+
+const EditWeekWrapper = styled(Link)`
+  border-radius: 16px;
+  padding: 8px 16px;
+  background-color: #ffd873;
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: lowercase;
 `;
 
 const ActivitiesWrapper = styled(FlexColumn)`
   margin-bottom: 16px;
 `;
 
+const Note = styled.textarea`
+  width: 100%;
+  border-radius: 16px;
+  padding: 16px 8px;
+  box-sizing: border-box;
+`;
+
+const NoteLabel = styled.p`
+  margin: 0;
+  margin-bottom: 8px;
+  margin-top: 24px;
+  font-size: 20px;
+  font-family: "Rubik", sans-serif;
+`;
+
 function WeekDetail({ firebase, authUser, match }) {
+  const { addToast } = useToasts();
+  const [note, setNote] = useState(null);
+
   const id = match.params.id;
   const [weekDoc, loading, error] = useCollection(firebase.week(id));
-  const week = weekDoc && weekDoc.data();
+  const week = weekDoc && {
+    ...weekDoc.data(),
+    id: weekDoc.id
+  };
+
   const isCurrent = week ? isCurrentWeek(week) : false;
 
   if (loading) {
@@ -54,10 +91,45 @@ function WeekDetail({ firebase, authUser, match }) {
     doRemoveWorkout(firebase, authUser, week, index);
   };
 
+  const saveNote = () => {
+    doSaveCurrentWeeksNote(firebase, authUser, week, note);
+    addToast("Your note was automatically saved", {
+      appearance: "success",
+      autoDismiss: true
+    });
+  };
+
   return (
     <Wrapper>
       <WeekInfo week={week} />
-      <WorkoutPlanTitle>Workout plan</WorkoutPlanTitle>
+      {(note || week.note || isCurrent) && (
+        <>
+          <NoteLabel>Note</NoteLabel>
+          <Note
+            disabled={!isCurrent}
+            onBlur={saveNote}
+            placeholder="Write your notes here about this week's progress"
+            value={note || week.note}
+            onChange={e => setNote(e.target.value)}
+          />
+        </>
+      )}
+      <WorkoutPlanTitle>
+        Workout plan{" "}
+        <EditWeekWrapper
+          to={{
+            pathname: "/weeks-plan",
+            state: {
+              isNextWeek: false,
+              weekActivities: week.activities,
+              weekId: week.id,
+              workouts: week.workouts
+            }
+          }}
+        >
+          Edit
+        </EditWeekWrapper>
+      </WorkoutPlanTitle>
       <ActivitiesWrapper>
         {activities &&
           activities.map((activity, i) => {

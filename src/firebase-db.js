@@ -10,9 +10,10 @@ import {
 export function doSaveWeeksPlan(
   firebase,
   authUser,
+  workouts,
   activities,
   isNextWeek,
-  nextWeekId = null
+  weekId = null
 ) {
   const { from_date, to_date } = isNextWeek
     ? getNextWeekFromToDates()
@@ -26,7 +27,7 @@ export function doSaveWeeksPlan(
       distance: parseFloat(v.distance.toString().replace(/,/g, ".")) || 0
     }));
 
-  if (!nextWeekId) {
+  if (!weekId) {
     firebase
       .weeks()
       .doc()
@@ -42,17 +43,28 @@ export function doSaveWeeksPlan(
         workouts: []
       });
   } else {
+    let updatedActivities = correctActivities;
+    if (workouts && workouts.length > 0) {
+      updatedActivities = getUpdatedActivities(correctActivities, workouts);
+    }
+
+    const progressFulfilled = countWeekProgress({
+      workouts,
+      activities: updatedActivities
+    });
+
     firebase
       .weeks()
-      .doc(nextWeekId)
+      .doc(weekId)
       .set({
         name: `Week ${getNextWeekNumber()}`,
         from_date,
         to_date,
-        progressFulfilled: "0",
+        progressFulfilled:
+          workouts && workouts.length > 0 ? progressFulfilled : "0",
         user_id: authUser.uid,
-        activities: correctActivities,
-        workouts: []
+        activities: updatedActivities,
+        workouts: workouts || []
       });
   }
 }
@@ -85,7 +97,10 @@ export function doSaveWorkout(firebase, authUser, week, workout) {
     workouts: updatedWorkouts,
     activities: updatedActivities
   };
-  const progressFulfilled = countWeekProgress(updatedWeek);
+  const progressFulfilled = countWeekProgress({
+    workouts: updatedWorkouts,
+    activities: updatedActivities
+  });
 
   firebase
     .weeks()
@@ -113,7 +128,10 @@ export function doRemoveWorkout(firebase, authUser, week, index) {
     workouts: updatedWorkouts,
     activities: updatedActivities
   };
-  const newProgress = countWeekProgress(newWeek);
+  const newProgress = countWeekProgress({
+    activities: newWeek.activities,
+    workouts: newWeek.workouts
+  });
   const updatedWeek = { ...newWeek, progressFulfilled: newProgress };
 
   firebase
@@ -136,4 +154,14 @@ export function doSaveUser(firebase, authUser, { name, email }) {
   } catch (e) {
     console.log({ e });
   }
+}
+
+export function doSaveCurrentWeeksNote(firebase, authUser, week, note) {
+  firebase
+    .weeks()
+    .doc(week.id)
+    .set({
+      ...week,
+      note
+    });
 }

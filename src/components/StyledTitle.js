@@ -10,13 +10,19 @@ const StyledLink = styled(Link)`
   margin-bottom: 16px;
 `;
 
+const TitleWrapper = styled.div`
+  background-color: #ffd873;
+  width: 100%;
+`;
+
 const TitleWithIcon = styled.div`
+  max-width: 400px;
+  margin: 0 auto;
+
   display: flex;
   align-items: center;
   flex-flow: ${({ authUser }) => (authUser ? "row" : "column")};
   justify-content: space-around;
-  background-color: #ffd873;
-  margin: 0;
   padding-bottom: 8px;
   padding-top: ${({ authUser }) => (authUser ? "8px" : 0)};
 `;
@@ -42,14 +48,16 @@ const Icon = styled.img`
 function StyledTitle({ authUser }) {
   return (
     <StyledLink to={authUser ? "/weeks" : "/"}>
-      <TitleWithIcon authUser={authUser}>
-        <TextWrapper authUser={authUser}>
-          <Icon src="/icons/fitness.svg" />
-          <Title>gymmie</Title>
-        </TextWrapper>
-        {/* <TitleText>track your workouts with ease</TitleText> */}
-        {authUser && <SignOutButton />}
-      </TitleWithIcon>
+      <TitleWrapper>
+        <TitleWithIcon authUser={authUser}>
+          <TextWrapper authUser={authUser}>
+            <Icon src="/icons/fitness.svg" />
+            <Title>gymmie</Title>
+          </TextWrapper>
+          {/* <TitleText>track your workouts with ease</TitleText> */}
+          {authUser && <SignOutButton />}
+        </TitleWithIcon>
+      </TitleWrapper>
     </StyledLink>
   );
 }

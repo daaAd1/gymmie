@@ -128,7 +128,7 @@ function Weeks({ authUser, firebase }) {
           <WorkoutWeek week={currentWeek} />
         ) : (
           <NewWorkoutLink
-            to={{ pathname: "weeks-plan", state: { isNextWeek: false } }}
+            to={{ pathname: "/weeks-plan", state: { isNextWeek: false } }}
           >
             Create plan for this week
           </NewWorkoutLink>
@@ -145,11 +145,11 @@ function Weeks({ authUser, firebase }) {
       {!loadingCurrentWeek && (
         <NewWorkoutLink
           to={{
-            pathname: "weeks-plan",
+            pathname: "/weeks-plan",
             state: {
               isNextWeek: true,
-              nextWeekActivities: nextWeek && nextWeek.activities,
-              nextWeekId: nextWeek && nextWeek.id
+              weekActivities: nextWeek && nextWeek.activities,
+              weekId: nextWeek && nextWeek.id
             }
           }}
         >

@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
+import { ToastProvider } from "react-toast-notifications";
 import StyledTitle from "./components/StyledTitle";
 import GlobalStyles from "./globalStyles";
 import Navigation from "./components/Navigation";
@@ -25,9 +26,11 @@ const WithAuthApp = withAuthentication(App);
 const rootElement = document.getElementById("root");
 ReactDOM.render(
   <FirebaseContext.Provider value={new Firebase()}>
-    <Router>
-      <WithAuthApp />
-    </Router>
+    <ToastProvider placement="bottom-center">
+      <Router>
+        <WithAuthApp />
+      </Router>
+    </ToastProvider>
   </FirebaseContext.Provider>,
   rootElement
 );

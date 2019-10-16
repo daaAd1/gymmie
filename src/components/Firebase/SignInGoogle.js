@@ -5,6 +5,7 @@ import { ErrorMessage } from "./SignUp";
 import styled from "styled-components";
 import { PrimaryButton } from "../defaults/Buttons";
 import { withFirebase } from ".";
+import { doSaveUser } from "../../firebase-db";
 
 const Wrapper = styled(FlexColumn)`
   margin-bottom: 16px;
@@ -37,6 +38,10 @@ function SignInGoogleForm({ firebase, history }) {
     firebase
       .doSignInWithGoogle()
       .then(socialAuthUser => {
+        doSaveUser(firebase, socialAuthUser, {
+          name: socialAuthUser.user.displayName,
+          email: socialAuthUser.user.email
+        });
         history.push("/weeks");
       })
       .catch(error => {

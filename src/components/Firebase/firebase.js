@@ -15,8 +15,25 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
 
+    app
+      .firestore()
+      .enablePersistence()
+      .catch(function(err) {
+        if (err.code == "failed-precondition") {
+          // Multiple tabs open, persistence can only be enabled
+          // in one tab at a a time.
+          console.log("Enabling cache persistence failed - multiple tabs open");
+        } else if (err.code == "unimplemented") {
+          // The current browser does not support all of the
+          // features required to enable persistence
+          console.log(
+            "Enabling cache persistence failed - not supported by browser"
+          );
+        }
+      });
     this.auth = app.auth();
     this.db = app.firestore();
+
     this.googleProvider = new app.auth.GoogleAuthProvider();
     this.facebookProvider = new app.auth.FacebookAuthProvider();
   }

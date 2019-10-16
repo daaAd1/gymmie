@@ -4,19 +4,23 @@ import styled from "styled-components";
 import { Link, withRouter } from "react-router-dom";
 import withAuthUser from "./Firebase/Session/withAuthUser";
 
+const NavWrapper = styled.div`
+  background-color: #ffd873;
+`;
+
 const Wrapper = styled(FlexRow)`
+  max-width: 400px;
   margin-top: -1px;
   margin-bottom: 8px;
   justify-content: space-around;
-  background-color: #ffd873;
+  margin: 0 auto;
+
   z-index: 15;
   position: sticky;
   top: ${({ sticky }) => (sticky ? 0 : "initial")};
   transition: top 2500s linear;
   top: 0;
   padding: 16px 0;
-  /* border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px; */
 `;
 
 const NavLink = styled(Link)`
@@ -54,7 +58,7 @@ function Navigation({ location: { pathname }, authUser }) {
   });
 
   return (
-    <div>
+    <NavWrapper>
       {authUser && (
         <Wrapper sticky={isSticky}>
           <NavLink
@@ -70,7 +74,7 @@ function Navigation({ location: { pathname }, authUser }) {
           </NavLink>
         </Wrapper>
       )}
-    </div>
+    </NavWrapper>
   );
 }
 

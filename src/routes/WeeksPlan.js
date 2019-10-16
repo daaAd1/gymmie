@@ -43,7 +43,7 @@ const SavePlanButton = styled(PrimaryButton)`
 
 function WeeksPlan({ history, location, firebase, authUser }) {
   const {
-    state: { isNextWeek, nextWeekActivities, nextWeekId }
+    state: { isNextWeek, weekActivities, weekId, workouts }
   } = location;
 
   const [activities, dispatchActivities] = useReducer(activitiesReducer, [
@@ -51,16 +51,23 @@ function WeeksPlan({ history, location, firebase, authUser }) {
   ]);
 
   useEffect(() => {
-    if (isNextWeek && nextWeekActivities) {
+    if (weekActivities) {
       dispatchActivities({
         type: "setActivities",
-        value: nextWeekActivities
+        value: weekActivities
       });
     }
-  }, [isNextWeek, nextWeekActivities]);
+  }, [isNextWeek, weekActivities]);
 
   const saveNextWeekAndRedirect = () => {
-    doSaveWeeksPlan(firebase, authUser, activities, isNextWeek, nextWeekId);
+    doSaveWeeksPlan(
+      firebase,
+      authUser,
+      workouts,
+      activities,
+      isNextWeek,
+      weekId
+    );
 
     history.push("/weeks");
   };
@@ -88,7 +95,7 @@ function WeeksPlan({ history, location, firebase, authUser }) {
         onClick={() =>
           dispatchActivities({
             type: "add",
-            value: { type: "", minutes: "", distance: "" }
+            value: { type: "Running", minutes: "", distance: "" }
           })
         }
       >
@@ -99,19 +106,10 @@ function WeeksPlan({ history, location, firebase, authUser }) {
       <SavePlanButton
         disabled={activities.length === 0}
         onClick={e => {
-          if (
-            !isNextWeek &&
-            window.confirm(
-              "Are you sure you want to create this workout? You won't be able to change it later"
-            )
-          ) {
-            saveNextWeekAndRedirect(e);
-          } else {
-            saveNextWeekAndRedirect(e);
-          }
+          saveNextWeekAndRedirect(e);
         }}
       >
-        Save next week's plan
+        {isNextWeek ? "Save next week's plan" : "Save current week's plan"}
       </SavePlanButton>
     </div>
   );

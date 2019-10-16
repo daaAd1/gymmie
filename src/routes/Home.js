@@ -1,7 +1,9 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { FlexColumn } from "../components/defaults/Flex";
 import { PrimaryLink } from "../components/defaults/Buttons";
+import withAuthUser from "../components/Firebase/Session/withAuthUser";
 
 const Wrapper = styled(FlexColumn)``;
 
@@ -58,7 +60,11 @@ const FeaturesTitle = styled.h2`
   font-size: 28px;
 `;
 
-function Home() {
+function Home({ authUser }) {
+  if (authUser) {
+    return <Redirect to="/weeks" />;
+  }
+
   return (
     <Wrapper>
       <MainText>
@@ -81,4 +87,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default withAuthUser(Home);

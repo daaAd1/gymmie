@@ -36,7 +36,10 @@ export const appStateReducer = (appState, { type, value, id, workout }) => {
             workouts: updatedWorkouts,
             activities: updatedActivities
           };
-          const newProgress = countWeekProgress(newWeek);
+          const newProgress = countWeekProgress({
+            workouts: newWeek.workouts,
+            activities: newWeek.activities
+          });
           return { ...newWeek, progressFulfilled: newProgress };
         }
         return week;
@@ -185,7 +188,10 @@ export const appStateReducer = (appState, { type, value, id, workout }) => {
 
             return {
               ...updatedWeek,
-              progressFulfilled: countWeekProgress(updatedWeek)
+              progressFulfilled: countWeekProgress({
+                workouts: updatedWeek.workouts,
+                activities: updatedWeek.activities
+              })
             };
           }
           return week;

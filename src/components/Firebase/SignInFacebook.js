@@ -5,6 +5,7 @@ import { withFirebase } from ".";
 import { ErrorMessage } from "./SignUp";
 import styled from "styled-components";
 import { PrimaryButton } from "../defaults/Buttons";
+import { doSaveUser } from "../../firebase-db";
 
 const Wrapper = styled(FlexColumn)`
   margin-bottom: 16px;
@@ -26,7 +27,11 @@ function SignInFacebookForm({ firebase, history }) {
   const onClick = event => {
     firebase
       .doSignInWithFacebook()
-      .then(() => {
+      .then(socialAuthUser => {
+        doSaveUser(firebase, socialAuthUser, {
+          name: socialAuthUser.additionalUserInfo.profile.name,
+          email: socialAuthUser.additionalUserInfo.profile.email
+        });
         history.push("/weeks");
       })
       .catch(error => {

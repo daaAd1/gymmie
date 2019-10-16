@@ -47,8 +47,7 @@ export function isWeekNextWeek(week) {
   );
 }
 
-export function countWeekProgress(week) {
-  const { activities, workouts } = week;
+export function countWeekProgress({ activities, workouts }) {
   const weekProgressPercentages = [];
 
   activities.map(activity => {
@@ -87,10 +86,12 @@ export function countWeekProgress(week) {
       (total, percentage) => total + percentage,
       0
     );
-    return Math.round(totalProgress / weekProgressPercentages.length);
+    return Math.round(totalProgress / weekProgressPercentages.length).toFixed(
+      0
+    );
   }
 
-  return 0;
+  return "0";
 }
 
 export function getUpdatedActivities(activities, workouts) {

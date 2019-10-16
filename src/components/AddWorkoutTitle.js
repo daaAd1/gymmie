@@ -44,11 +44,11 @@ function AddWorkoutTitle({
   authUser,
   noMarginBottom = false,
   title,
-  dispatchAppState,
   week
 }) {
   const [isWorkoutFormVisible, setIsWorkoutFormVisible] = useState(false);
   const showButton = isCurrentWeek(week);
+
   const saveWorkout = workout => {
     doSaveWorkout(firebase, authUser, week, workout);
     setIsWorkoutFormVisible(false);
