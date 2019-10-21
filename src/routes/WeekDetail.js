@@ -9,7 +9,8 @@ import WeekInfo from "../components/WeekInfo";
 import { isCurrentWeek } from "../utils";
 import AddWorkoutTitle from "../components/AddWorkoutTitle";
 import { NoResultsFound } from "./Weeks";
-import { FlexColumn, FlexRow } from "../components/defaults/Flex";
+import { FlexColumn } from "../components/defaults/Flex";
+import TextareaAutosize from "react-textarea-autosize";
 import moment from "moment";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { withFirebase } from "../components/Firebase";
@@ -43,7 +44,7 @@ const ActivitiesWrapper = styled(FlexColumn)`
   margin-bottom: 16px;
 `;
 
-const Note = styled.textarea`
+const Note = styled(TextareaAutosize)`
   width: 100%;
   border-radius: 16px;
   padding: 16px 8px;
@@ -92,7 +93,7 @@ function WeekDetail({ firebase, authUser, match }) {
   };
 
   const saveNote = () => {
-    doSaveCurrentWeeksNote(firebase, authUser, week, note);
+    doSaveCurrentWeeksNote(firebase, authUser, week, note || week.note);
     addToast("Your note was automatically saved", {
       appearance: "success",
       autoDismiss: true
@@ -104,8 +105,9 @@ function WeekDetail({ firebase, authUser, match }) {
       <WeekInfo week={week} />
       {(note || week.note || isCurrent) && (
         <>
-          <NoteLabel>Note</NoteLabel>
+          <NoteLabel>Notes</NoteLabel>
           <Note
+            minRows={3}
             disabled={!isCurrent}
             onBlur={saveNote}
             placeholder="Write your notes here about this week's progress"

@@ -13,10 +13,12 @@ function withAuthentication(Component) {
   function WithAuthentication(props) {
     const { firebase } = props;
     const [authUser, setAuthUser] = useState(null);
+    const [isUserLoaded, setIsUserLoaded] = useState(false);
 
     useEffect(() => {
       const listener = firebase.auth.onAuthStateChanged(authUser => {
         authUser ? setAuthUser(authUser) : setAuthUser(null);
+        setIsUserLoaded(true);
       });
 
       return function cleanup() {
@@ -26,7 +28,7 @@ function withAuthentication(Component) {
 
     return (
       <AuthUserContext.Provider value={authUser}>
-        <Component {...props} />
+        <Component isUserLoaded={isUserLoaded} {...props} />
       </AuthUserContext.Provider>
     );
   }

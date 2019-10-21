@@ -19,12 +19,16 @@ const Wrapper = styled.div`
   margin-bottom: 36px;
 `;
 
-function Routes() {
+function Routes({ isUserLoaded }) {
   return (
     <ScrollToTop>
       <Wrapper>
         <Switch>
-          <Route path="/" exact component={() => <Home />} />
+          <Route
+            path="/"
+            exact
+            component={() => <Home isUserLoaded={isUserLoaded} />}
+          />
           <Route path="/weeks" exact component={() => <Weeks />} />
           <Route path="/sign-in" exact component={() => <SignInPage />} />
           <Route path="/sign-up" exact component={() => <SignUpPage />} />

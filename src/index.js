@@ -10,13 +10,13 @@ import Firebase, { FirebaseContext } from "./components/Firebase";
 import Routes from "./router";
 import { withAuthentication } from "./components/Firebase/Session";
 
-function App() {
+function App({ isUserLoaded }) {
   return (
     <>
       <GlobalStyles />
       <StyledTitle />
       <Navigation />
-      <Routes />
+      <Routes isUserLoaded={isUserLoaded} />
     </>
   );
 }

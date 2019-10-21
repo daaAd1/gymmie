@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { FlexColumn } from "../components/defaults/Flex";
 import { PrimaryLink } from "../components/defaults/Buttons";
 import withAuthUser from "../components/Firebase/Session/withAuthUser";
+import { Loader } from "../components/defaults/Loader";
 
 const Wrapper = styled(FlexColumn)``;
 
@@ -60,7 +61,11 @@ const FeaturesTitle = styled.h2`
   font-size: 28px;
 `;
 
-function Home({ authUser }) {
+function Home({ authUser, isUserLoaded }) {
+  if (!isUserLoaded) {
+    return <Loader />;
+  }
+
   if (authUser) {
     return <Redirect to="/weeks" />;
   }
