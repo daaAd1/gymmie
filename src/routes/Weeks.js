@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { getNextWeekFromToDates, getCurrentWeekFromToDates } from "../utils";
+import {
+  getNextWeekFromToDates,
+  getCurrentWeekFromToDates,
+  getNextWeekNumber
+} from "../utils";
 import { PrimaryLink, PrimaryButton } from "../components/defaults/Buttons";
 import styled from "styled-components";
 import { FlexColumn } from "../components/defaults/Flex";
@@ -88,7 +92,7 @@ function Weeks({ authUser, firebase }) {
       .weeks()
       .where("from_date", "<", getCurrentWeekFromToDates().from_date)
       .where("user_id", "==", authUser ? authUser.uid : 0)
-      // .orderBy("from_date")
+      .orderBy("from_date", "desc")
       // .startAt(0)
       .limit(limit)
   );

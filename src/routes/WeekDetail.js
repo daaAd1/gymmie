@@ -10,7 +10,7 @@ import { isCurrentWeek } from "../utils";
 import AddWorkoutTitle from "../components/AddWorkoutTitle";
 import { NoResultsFound } from "./Weeks";
 import { FlexColumn } from "../components/defaults/Flex";
-import TextareaAutosize from "react-textarea-autosize";
+import TextareaAutosize from 'react-autosize-textarea';
 import moment from "moment";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { withFirebase } from "../components/Firebase";
@@ -107,7 +107,7 @@ function WeekDetail({ firebase, authUser, match }) {
         <>
           <NoteLabel>Notes</NoteLabel>
           <Note
-            minRows={3}
+            rows={3}
             disabled={!isCurrent}
             onBlur={saveNote}
             placeholder="Write your notes here about this week's progress"
@@ -142,6 +142,7 @@ function WeekDetail({ firebase, authUser, match }) {
         title="Workouts"
         week={week}
         noMarginBottom={!(workouts && workouts.length > 0)}
+        isWeekDetail={true}
       />
       {sortedWorkouts && sortedWorkouts.length > 0 ? (
         sortedWorkouts.map((workout, i) => {

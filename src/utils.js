@@ -1,15 +1,13 @@
 import moment from "moment";
 
 export function getNextWeekNumber() {
-  const startOfYear = moment().startOf("year");
   return moment()
     .add(7, "days")
-    .diff(startOfYear, "week");
+    .week();
 }
 
 export function getCurrentWeekNumber() {
-  const startOfYear = moment().startOf("year");
-  return moment().diff(startOfYear, "week");
+  return moment().week();
 }
 
 export function getNextWeekFromToDates() {

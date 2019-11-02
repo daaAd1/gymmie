@@ -56,16 +56,19 @@ export function doSaveWeeksPlan(
     firebase
       .weeks()
       .doc(weekId)
-      .set({
-        name: `Week ${getNextWeekNumber()}`,
-        from_date,
-        to_date,
-        progressFulfilled:
-          workouts && workouts.length > 0 ? progressFulfilled : "0",
-        user_id: authUser.uid,
-        activities: updatedActivities,
-        workouts: workouts || []
-      });
+      .set(
+        {
+          name: `Week ${getNextWeekNumber()}`,
+          from_date,
+          to_date,
+          progressFulfilled:
+            workouts && workouts.length > 0 ? progressFulfilled : "0",
+          user_id: authUser.uid,
+          activities: updatedActivities,
+          workouts: workouts || []
+        },
+        { merge: true }
+      );
   }
 }
 

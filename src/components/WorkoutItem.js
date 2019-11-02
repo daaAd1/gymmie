@@ -53,7 +53,6 @@ const BottomRow = styled(FlexRow)`
 
 const DayInWeekWrapper = styled.div`
   position: relative;
-  margin-top: 16px;
 `;
 
 const DayInWeek = styled.h3`

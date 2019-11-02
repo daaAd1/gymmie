@@ -10,6 +10,7 @@ const ButtonWrapper = styled.button`
 
   border: 0;
   background-color: #ffd873;
+  cursor: pointer;
 `;
 
 const Icon = styled.img`

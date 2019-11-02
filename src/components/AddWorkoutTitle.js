@@ -7,15 +7,12 @@ import { withFirebase } from "./Firebase";
 import withAuthUser from "./Firebase/Session/withAuthUser";
 import { doSaveWorkout } from "../firebase-db";
 
-const Wrapper = styled(FlexColumn)`
-  /* margin: ${({ noMarginBottom }) =>
-    noMarginBottom ? "24px 0 0" : "24px 0 16px"}; */
-`;
+const Wrapper = styled(FlexColumn)``;
 
 const CurrentWeeksTitleWrapper = styled(FlexRow)`
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: ${({ isWeekDetail }) => (isWeekDetail ? "40px" : "16px")};
 `;
 
 const CurrentWeeksTitle = styled.h2`
@@ -32,6 +29,7 @@ const PlusIconWrapper = styled(FlexColumn)`
   width: 30px;
   height: 30px;
   background-color: #ffd873;
+  cursor: pointer;
 `;
 
 const PlusIcon = styled.img`
@@ -42,9 +40,9 @@ const PlusIcon = styled.img`
 function AddWorkoutTitle({
   firebase,
   authUser,
-  noMarginBottom = false,
   title,
-  week
+  week,
+  isWeekDetail = false
 }) {
   const [isWorkoutFormVisible, setIsWorkoutFormVisible] = useState(false);
   const showButton = isCurrentWeek(week);
@@ -55,8 +53,8 @@ function AddWorkoutTitle({
   };
 
   return (
-    <Wrapper noMarginBottom={noMarginBottom}>
-      <CurrentWeeksTitleWrapper>
+    <Wrapper isWeekDetail={isWeekDetail}>
+      <CurrentWeeksTitleWrapper isWeekDetail={isWeekDetail}>
         <CurrentWeeksTitle>{title}</CurrentWeeksTitle>
         {showButton && (
           <PlusIconWrapper
